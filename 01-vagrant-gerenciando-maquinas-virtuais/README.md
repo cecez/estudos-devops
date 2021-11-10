@@ -8,4 +8,8 @@ vagrant up
 
 # configurações da conexão ssh com vagrant
 vagrant ssh-config
+
+# outros comandos
+vagrant destroy
+vagrant reload
 ```
