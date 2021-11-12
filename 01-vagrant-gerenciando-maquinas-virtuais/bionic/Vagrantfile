@@ -1,28 +1,48 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/bionic64"
 
-    config.vm.network "forwarded_port", guest:80, host:8080 #guest=máquina virtual, #host=máquina física
-    #config.vm.network "private_network", ip: "192.168.59.2" #desabilitando pois há bug no virtualbox/vagrant/mac os
-    config.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.226"
+    config.vm.define "maquina_db" do |config_db|
+        config_db.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.226"
 
-    # workaround para funcionar no mac monterrey enquanto não atualiza virtualbox
-    config.vm.provider "virtualbox" do |v|
-      v.gui = true
+        # workaround para funcionar no mac monterrey enquanto não atualiza virtualbox
+        config_db.vm.provider "virtualbox" do |v|
+          v.gui = true
+        end
+
+        # provisionamento
+        # instala mysql, inclui usuário, atualiza configuração e reinicia serviço
+        config_db.vm.provision "shell", inline: "echo **** iniciando provisionamento maquina_db"
+        $script_mysql = <<-SCRIPT
+            apt-get update && \
+            apt-get install -y mysql-server-5.7 && \
+            mysql -e "create user 'phpuser'@'%' identified by 'pass';"
+        SCRIPT
+        config_db.vm.provision "shell", inline: $script_mysql
+        config_db.vm.provision "shell", inline: "cat /compartilhado/conf/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf"
+        config_db.vm.provision "shell", inline: "service mysql restart"
+        config_db.vm.provision "shell", inline: "echo **** terminando provisionamento maquina_db"
+
+        config_db.vm.synced_folder "./conf", "/compartilhado/conf"
+        config_db.vm.synced_folder ".", "/vagrant", disabled: true
     end
 
-    # provisionamento
-    # instala mysql, inclui usuário, atualiza configuração e reinicia serviço
-    config.vm.provision "shell", inline: "echo **** iniciando provisionamento"
-    $script_mysql = <<-SCRIPT
-        apt-get update && \
-        apt-get install -y mysql-server-5.7 && \
-        mysql -e "create user 'phpuser'@'%' identified by 'pass';"
-    SCRIPT
-    config.vm.provision "shell", inline: $script_mysql
-    config.vm.provision "shell", inline: "cat /compartilhado/conf/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf"
-    config.vm.provision "shell", inline: "service mysql restart"
-    config.vm.provision "shell", inline: "echo **** terminando provisionamento"
+    config.vm.define "maquina_web" do |config_web|
+        config_web.vm.network "forwarded_port", guest:8888, host:8888 #guest=máquina virtual, #host=máquina física
+        #config_web.vm.network "private_network", ip: "192.168.59.2" #desabilitando pois há bug no virtualbox/vagrant/mac os
+        config_web.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.227"
 
+        config_web.vm.provider "virtualbox" do |v|
+            v.gui = true
+        end
 
-    config.vm.synced_folder "./conf", "/compartilhado/conf"
+        config_web.vm.provision "shell", inline: "echo **** iniciando provisionamento maquina_web"
+        config_web.vm.provision "shell", inline: "apt-get update && apt-get install -y puppet"
+        config_web.vm.provision "puppet" do |puppet|
+            puppet.manifests_path = "./conf/manifests"
+            puppet.manifest_file = "maquina-web.pp"
+        end
+
+        config_web.vm.provision "shell", inline: "echo **** terminando provisionamento maquina_web"
+    end
+
 end

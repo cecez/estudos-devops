@@ -12,4 +12,8 @@ vagrant ssh-config
 # outros comandos
 vagrant destroy
 vagrant reload
+
+# comandos para apenas uma das máquinas, para ambientes multi-machine
+vagrant status nome-maquina
+vagrant ssh maquina-web
 ```
