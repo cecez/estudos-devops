@@ -45,4 +45,26 @@ Vagrant.configure("2") do |config|
         config_web.vm.provision "shell", inline: "echo **** terminando provisionamento maquina_web"
     end
 
+    config.vm.define "maquina_mysqlserver" do |config_mysqlserver|
+        config_mysqlserver.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.228"
+        config_mysqlserver.vm.provider "virtualbox" do |v| v.gui = true end
+        config_mysqlserver.vm.provision "shell",
+            inline: "cat /vagrant/conf/id_rsa.pub >> .ssh/authorized_keys"
+    end
+
+    config.vm.define "maquina_ansible" do |config_ansible|
+        config_ansible.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.229"
+        config_ansible.vm.provider "virtualbox" do |v| v.gui = true end
+        config_ansible.vm.provision "shell",
+            inline: "cp /vagrant/conf/id_rsa /home/vagrant && \
+                    chmod 600 /home/vagrant/id_rsa"
+
+        config_ansible.vm.provision "shell",
+            inline: "apt-get update && \
+                    apt-get install -y software-properties-common && \
+                    apt-add-repository --yes --update ppa:ansible/ansible && \
+                    apt-get install -y ansible
+                    "
+    end
+
 end
