@@ -1,34 +1,33 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/bionic64"
 
-    config.vm.define "maquina_db" do |config_db|
-        config_db.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.226"
-
-        # workaround para funcionar no mac monterrey enquanto não atualiza virtualbox
-        config_db.vm.provider "virtualbox" do |v|
-          v.gui = true
-        end
-
-        # provisionamento
-        # instala mysql, inclui usuário, atualiza configuração e reinicia serviço
-        config_db.vm.provision "shell", inline: "echo **** iniciando provisionamento maquina_db"
-        $script_mysql = <<-SCRIPT
-            apt-get update && \
-            apt-get install -y mysql-server-5.7 && \
-            mysql -e "create user 'phpuser'@'%' identified by 'pass';"
-        SCRIPT
-        config_db.vm.provision "shell", inline: $script_mysql
-        config_db.vm.provision "shell", inline: "cat /compartilhado/conf/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf"
-        config_db.vm.provision "shell", inline: "service mysql restart"
-        config_db.vm.provision "shell", inline: "echo **** terminando provisionamento maquina_db"
-
-        config_db.vm.synced_folder "./conf", "/compartilhado/conf"
-        config_db.vm.synced_folder ".", "/vagrant", disabled: true
-    end
+#     config.vm.define "maquina_db" do |config_db|
+#         config_db.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.226"
+#
+#         # workaround para funcionar no mac monterrey enquanto não atualiza virtualbox
+#         config_db.vm.provider "virtualbox" do |v|
+#           v.gui = true
+#         end
+#
+#         # provisionamento
+#         # instala mysql, inclui usuário, atualiza configuração e reinicia serviço
+#         config_db.vm.provision "shell", inline: "echo **** iniciando provisionamento maquina_db"
+#         $script_mysql = <<-SCRIPT
+#             apt-get update && \
+#             apt-get install -y mysql-server-5.7 && \
+#             mysql -e "create user 'phpuser'@'%' identified by 'pass';"
+#         SCRIPT
+#         config_db.vm.provision "shell", inline: $script_mysql
+#         config_db.vm.provision "shell", inline: "cat /compartilhado/conf/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf"
+#         config_db.vm.provision "shell", inline: "service mysql restart"
+#         config_db.vm.provision "shell", inline: "echo **** terminando provisionamento maquina_db"
+#
+#         config_db.vm.synced_folder "./conf", "/compartilhado/conf"
+#         config_db.vm.synced_folder ".", "/vagrant", disabled: true
+#     end
 
     config.vm.define "maquina_web" do |config_web|
         config_web.vm.network "forwarded_port", guest:8888, host:8888 #guest=máquina virtual, #host=máquina física
-        #config_web.vm.network "private_network", ip: "192.168.59.2" #desabilitando pois há bug no virtualbox/vagrant/mac os
         config_web.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.227"
 
         config_web.vm.provider "virtualbox" do |v|
@@ -57,7 +56,8 @@ Vagrant.configure("2") do |config|
         config_ansible.vm.provider "virtualbox" do |v| v.gui = true end
         config_ansible.vm.provision "shell",
             inline: "cp /vagrant/conf/id_rsa /home/vagrant && \
-                    chmod 600 /home/vagrant/id_rsa"
+                    chmod 600 /home/vagrant/id_rsa && \
+                    chown vagrant:vagrant /home/vagrant/id_rsa"
 
         config_ansible.vm.provision "shell",
             inline: "apt-get update && \
@@ -65,6 +65,8 @@ Vagrant.configure("2") do |config|
                     apt-add-repository --yes --update ppa:ansible/ansible && \
                     apt-get install -y ansible
                     "
+        config_ansible.vm.provision "shell",
+            inline: "ansible-playbook -i /vagrant/conf/ansible/hosts /vagrant/conf/ansible/playbook.yml"
     end
 
 end

@@ -2,7 +2,7 @@
 
 echo "Testando conexão com maquina-db..." . PHP_EOL;
 
-$serverIP = '192.168.1.226';
+$serverIP = '192.168.1.228';
 $usuario = 'phpuser';
 $senha = 'pass';
 

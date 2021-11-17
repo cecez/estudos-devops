@@ -24,4 +24,5 @@ vagrant ssh maquina-web
 Comandos ansible
 ```shell
 ansible-playbook --version
+ansible-playbook -i /arquivo/inventario_hosts /arquivo/playbook.yml
 ```
