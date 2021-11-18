@@ -1,6 +1,11 @@
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/bionic64"
 
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = 512
+        vb.cpus = 1
+    end
+
 #     config.vm.define "maquina_db" do |config_db|
 #         config_db.vm.network "public_network", bridge: "en1: Wi-Fi (AirPort)", ip: "192.168.1.226"
 #
@@ -67,6 +72,17 @@ Vagrant.configure("2") do |config|
                     "
         config_ansible.vm.provision "shell",
             inline: "ansible-playbook -i /vagrant/conf/ansible/hosts /vagrant/conf/ansible/playbook.yml"
+    end
+
+    config.vm.define "maquina_memcached" do |config_memcached|
+        config_memcached.vm.box = "centos/7"
+        config_memcached.vbguest.auto_update = false
+        config_memcached.vm.provider "virtualbox" do |vb|
+            vb.memory = 512
+            vb.cpus = 1
+            vb.name = "centos7_memcached"
+            vb.gui = true
+        end
     end
 
 end
