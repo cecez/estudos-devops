@@ -85,4 +85,15 @@ Vagrant.configure("2") do |config|
         end
     end
 
+    config.vm.define "maquina_docker" do |config_docker|
+        config_docker.vbguest.auto_update = false
+        config_docker.vm.provider "virtualbox" do |vb|
+            vb.memory = 512
+            vb.cpus = 1
+            vb.gui = true
+        end
+        config_docker.vm.provision "shell",
+            inline: "apt-get update && apt-get -y install docker.io"
+    end
+
 end
