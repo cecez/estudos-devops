@@ -26,7 +26,37 @@ docker volume create <nome-do-volume>
 docker run -dp 3000:3000 -v <nome-do-volume>:/etc/todos getting-started
 
 docker volume inspect <nome-do-volume>
+
+# criar network
+docker network create <nome-da-network>
+
+# anexando contêiner em uma network
+docker run -d \
+    --network <nome-da-network> --network-alias mysql \
+    -v todo-mysql-data:/var/lib/mysql \
+    -e MYSQL_ROOT_PASSWORD=secret \
+    -e MYSQL_DATABASE=todos \
+    mysql:5.7
+
+# contêiner com várias ferramentas para analisar redes
+docker run -it --network <network-para-analisar> nicolaka/netshoot
+
+# rodando contêiner passando variáveis de ambiente (env vars)
+docker run -dp 3000:3000 \
+  -w /app -v "$(pwd):/app" \
+  --network todo-app \
+  -e MYSQL_HOST=mysql \
+  -e MYSQL_USER=root \
+  -e MYSQL_PASSWORD=secret \
+  -e MYSQL_DB=todos \
+  node:12-alpine \
+  sh -c "yarn install && yarn run dev"
+
+
 ```
+
+- In general, *each container should do one thing and do it well*
+- If two containers are on the same network, they can talk to each other. If they aren't, they can't.
 
 - Volumes
     - named volumes: docker gerencia onde armazena
