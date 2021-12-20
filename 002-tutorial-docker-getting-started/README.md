@@ -56,14 +56,28 @@ docker run -dp 3000:3000 \
 docker-compose up -d 
 docker-compose down
 
+# pesquisar vulnerabilidades
+docker scan <nome-da-imagem>
+
+# analisar camadas (layers)
+docker image history <nome-da-imagem>
+docker image history --no-trunc <nome-da-imagem>
 
 ```
 
 - In general, *each container should do one thing and do it well*
 - If two containers are on the same network, they can talk to each other. If they aren't, they can't.
 - Ao usar o Docker Compose, uma rede é automaticamente criada, bem como alias para os serviços
+- .dockerignore files are an easy way to selectively copy only image relevant files
 
 - Volumes
     - named volumes: docker gerencia onde armazena
     - bind mounts: local de armazenagem é escolhido explicitamente
     - existem outras opções: sftp, s3, entre outros.
+
+- Layer caching
+    - Once a layer changes, all downstream layers have to be recreated as well
+
+- Multi-Stage Builds
+    - Separate build-time dependencies from runtime dependencies
+    - Reduce overall image size by shipping only what your app needs to run
