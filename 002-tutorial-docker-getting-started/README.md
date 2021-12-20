@@ -52,11 +52,16 @@ docker run -dp 3000:3000 \
   node:12-alpine \
   sh -c "yarn install && yarn run dev"
 
+# executar (em background) e parar serviços de contêineres
+docker-compose up -d 
+docker-compose down
+
 
 ```
 
 - In general, *each container should do one thing and do it well*
 - If two containers are on the same network, they can talk to each other. If they aren't, they can't.
+- Ao usar o Docker Compose, uma rede é automaticamente criada, bem como alias para os serviços
 
 - Volumes
     - named volumes: docker gerencia onde armazena
