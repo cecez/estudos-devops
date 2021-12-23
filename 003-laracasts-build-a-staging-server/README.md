@@ -14,3 +14,4 @@ location / {
     auth_basic_user_file "/caminho/do/arquivo/.htpasswd";
 }
 ```
+- configurar Cloudflare no domínio e suas opções adequadas (otimizações, cache, ssl, etc)
