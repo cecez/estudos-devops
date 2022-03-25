@@ -1,5 +1,5 @@
 # Preparando o ambiente
-Requisitos: Terraform, Python 3, Ansible, AWS CLI
+Requisitos: Terraform (https://www.terraform.io), Python 3, Ansible, AWS CLI
 ```shell
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
