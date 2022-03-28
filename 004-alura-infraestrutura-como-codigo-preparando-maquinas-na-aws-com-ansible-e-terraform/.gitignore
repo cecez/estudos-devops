@@ -1,0 +1,4 @@
+/aula1/.terraform
+.terraform*
+terraform*
+/aula1/estudos-devops-iac.pem

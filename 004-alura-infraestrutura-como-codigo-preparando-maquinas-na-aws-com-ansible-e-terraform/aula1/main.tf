@@ -16,12 +16,12 @@ provider "aws" {
 }
 
 resource "aws_instance" "app_server" {
-  ami           = "ami-0b0ea68c435eb488d" //Ubuntu Server 16.04 LTS (HVM),EBS General Purpose (SSD) Volume Type.
+  ami = "ami-0b0ea68c435eb488d" //Ubuntu Server 16.04 LTS (HVM),EBS General Purpose (SSD) Volume Type.
+  key_name = "estudos-devops-iac"
   instance_type = "t2.nano"
-  vpc_security_group_ids = ["sg-0e8470e76dca280e5"]
-  subnet_id              = "subnet-045b414b1dbd913ba"
-
+  subnet_id = "subnet-0961f1106dbb4c0e9"
   tags = {
     Name = "terraform"
   }
+  vpc_security_group_ids = ["sg-05087847e45b08127"]
 }
