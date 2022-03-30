@@ -19,3 +19,9 @@ terraform apply
 # servidor http enxuto
 nohup busybox httpd -f -p 8080 &
 ```
+
+## Aula 3
+- executando playbook com ansible
+```
+ansible-playbook playbook.yml -i hosts.yml -u ubuntu --private-key estudos-devops-iac.pem
+```

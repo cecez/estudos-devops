@@ -23,11 +23,11 @@ resource "aws_instance" "app_server" {
   tags = {
     Name = "terraform v3"
   }
-  user_data = <<-EOF
-                #!/bin/bash
-                cd /home/ubuntu
-                echo "<h1>Mensagem a ser mostrada</h1>" > index.html
-                nohup busybox httpd -f -p 8080 &
-                EOF
+#  user_data = <<-EOF
+#                #!/bin/bash
+#                cd /home/ubuntu
+#                echo "<h1>Mensagem a ser mostrada</h1>" > index.html
+#                nohup busybox httpd -f -p 8080 &
+#                EOF
   vpc_security_group_ids = ["sg-05087847e45b08127"]
 }
