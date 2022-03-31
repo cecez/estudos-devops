@@ -21,7 +21,7 @@ resource "aws_instance" "app_server" {
   instance_type = "t2.nano"
   subnet_id = "subnet-0961f1106dbb4c0e9"
   tags = {
-    Name = "terraform v3"
+    Name = "terraform v3 - terraform python virtualenv"
   }
 #  user_data = <<-EOF
 #                #!/bin/bash
