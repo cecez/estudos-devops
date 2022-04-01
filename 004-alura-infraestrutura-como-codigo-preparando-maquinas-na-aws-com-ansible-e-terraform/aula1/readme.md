@@ -10,6 +10,7 @@ terraform validate
 
 # aplica alterações
 terraform apply
+terraform destroy
 ```
 
 ## Aula 2
@@ -24,4 +25,7 @@ nohup busybox httpd -f -p 8080 &
 - executando playbook com ansible
 ```
 ansible-playbook playbook.yml -i hosts.yml -u ubuntu --private-key estudos-devops-iac.pem
+
+. venv/bin/activate # ativa ambiente virtual
+pip freeze # lista pacotes instalados
 ```
