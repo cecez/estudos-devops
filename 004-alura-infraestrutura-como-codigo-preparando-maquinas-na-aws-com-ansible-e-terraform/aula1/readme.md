@@ -29,3 +29,14 @@ ansible-playbook playbook.yml -i hosts.yml -u ubuntu --private-key estudos-devop
 . venv/bin/activate # ativa ambiente virtual
 pip freeze # lista pacotes instalados
 ```
+
+## Aula 4
+```
+# iniciando projeto django (rodar na pasta desejada que fique o projeto)
+django-admin startprojet setup .
+
+# rodar servidor
+python manage.py runserver 0.0.0.0:8000
+
+```
+- editar arquivo setup/settings.py e editar linha `ALLOWED_HOSTS = []` para `ALLOWED_HOSTS = ['*']`
