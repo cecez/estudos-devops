@@ -1,0 +1,5 @@
+- criar bucket (s3)
+- criar política de acesso (iam)
+- criar função (role, iam)
+- vincular role com política
+- importar esquema da api
